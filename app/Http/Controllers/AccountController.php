@@ -12,7 +12,8 @@ class AccountController extends Controller
 {
     public function index()
     {   
-        $accounts = Account::paginate();     
+        $user_id = Auth::id();
+        $accounts = Account::where('user_id', '=', $user_id)->paginate();     
         return view('accounts.index', compact('accounts'))->with('no', 1);
     }
 
@@ -35,7 +36,7 @@ class AccountController extends Controller
 
         $input = $request->all();
 
-        $input['user_id'] = Auth::id();;
+        $input['user_id'] = Auth::id();
 
         Account::create($input);       
 

@@ -17,7 +17,10 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::paginate();
+        $id = Auth::user()->id;
+        $transactions = Transaction::where('accounts.user_id', '=', $id)
+        ->leftJoin('accounts', 'accounts.id', '=', 'transactions.account_id')    
+        ->paginate();
         return view('transactions.index', compact('transactions'))->with('no', 1);
     }
 
@@ -28,7 +31,8 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        $accounts = Account::all();
+        $id = Auth::user()->id;
+        $accounts = Account::where('user_id', '=', $id)->get();
         return view('transactions.create', compact('accounts'));
         
     }
@@ -64,7 +68,7 @@ class TransactionController extends Controller
         
         Transaction::create($input);       
 
-        return redirect()->route('transactions.create')->with('message', 'Transaction has been done '.$new_balance);
+        return redirect()->route('transactions.create')->with('message', 'Transaction has been done '.$balance);
     }   
 
     /**
